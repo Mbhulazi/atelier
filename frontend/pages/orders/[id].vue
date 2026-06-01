@@ -117,27 +117,25 @@
 definePageMeta({ middleware: 'auth' })
 
 const route = useRoute()
-const config = useRuntimeConfig()
-const apiUrl = config.public.apiUrl
+const { authFetch, apiUrl } = useApi()
 const orderNumber = route.params.id as string
 
 const retrying = ref(false)
 
 const { data: order, pending } = await useFetch(`${apiUrl}/orders/${orderNumber}`, {
-  credentials: 'include',
+  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
 })
 
 const retryPayment = async () => {
   retrying.value = true
   try {
-    const res = await $fetch<{ url: string }>(`${apiUrl}/orders/checkout`, {
+    const res = await authFetch<{ url: string }>('/orders/checkout', {
       method: 'POST',
       body: {
         type: order.value?.type,
         painting_id: order.value?.painting_id,
         video_id: order.value?.video_id,
       },
-      credentials: 'include',
     })
     window.location.href = res.url
   } catch (e: any) {

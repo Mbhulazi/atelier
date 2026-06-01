@@ -190,8 +190,7 @@
 definePageMeta({ middleware: 'auth' })
 
 const route = useRoute()
-const config = useRuntimeConfig()
-const apiUrl = config.public.apiUrl
+const { authFetch, apiUrl } = useApi()
 const paintingId = route.params.id as string
 
 const mediums = ['Oil', 'Acrylic', 'Watercolor', 'Gouache', 'Pastel', 'Mixed Media', 'Ink', 'Other']
@@ -230,7 +229,7 @@ const allImages = computed(() => {
 
 onMounted(async () => {
   try {
-    const painting = await $fetch(`${apiUrl}/paintings/${paintingId}`, { credentials: 'include' })
+    const painting = await authFetch(`/paintings/${paintingId}`)
     Object.assign(form, {
       title: painting.title,
       description: painting.description || '',
@@ -303,10 +302,9 @@ const submitPainting = async () => {
     removedImageIds.value.forEach(id => formData.append(`removed_images[]`, String(id)))
     newImages.value.forEach(img => formData.append('images[]', img))
 
-    await $fetch(`${apiUrl}/dashboard/paintings/${paintingId}`, {
+    await authFetch(`/dashboard/paintings/${paintingId}`, {
       method: 'POST',
       body: formData,
-      credentials: 'include',
     })
     navigateTo('/dashboard/paintings')
   } finally {

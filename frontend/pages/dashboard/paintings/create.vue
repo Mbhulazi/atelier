@@ -216,8 +216,7 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
 
-const config = useRuntimeConfig()
-const apiUrl = config.public.apiUrl
+const { authFetch, apiUrl } = useApi()
 
 const mediums = ['Oil', 'Acrylic', 'Watercolor', 'Gouache', 'Pastel', 'Mixed Media', 'Ink', 'Other']
 const styles = ['Abstract', 'Realism', 'Impressionism', 'Expressionism', 'Surrealism', 'Pop Art', 'Minimalist', 'Other']
@@ -296,10 +295,9 @@ const submitPainting = async () => {
     form.tags.forEach((tag, i) => formData.append(`tags[${i}]`, tag))
     images.value.forEach((img) => formData.append('images[]', img))
 
-    await $fetch(`${apiUrl}/dashboard/paintings`, {
+    await authFetch('/dashboard/paintings', {
       method: 'POST',
       body: formData,
-      credentials: 'include',
     })
 
     navigateTo('/dashboard/paintings')

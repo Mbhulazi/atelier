@@ -61,7 +61,7 @@
 definePageMeta({ layout: 'default' })
 
 const { processImage, processing } = useGrisaille()
-const config = useRuntimeConfig()
+const { authFetch } = useApi()
 
 const analysisResult = ref<{
   analysis: any
@@ -89,9 +89,9 @@ const handleFileSelect = async (file: File) => {
     formData.append('palette', JSON.stringify(result.palette))
     formData.append('glazings', JSON.stringify(result.glazings))
 
-    const response = await $fetch<{ id: number }>(
-      `${config.public.apiUrl}/grisaille/analyze`,
-      { method: 'POST', body: formData, withCredentials: true }
+    const response = await authFetch<{ id: number }>(
+      '/grisaille/analyze',
+      { method: 'POST', body: formData }
     )
     savedAnalysisId.value = response.id
   } catch (error) {

@@ -26,15 +26,24 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     async fetchUser() {
+      const token = localStorage.getItem('auth_token')
+      if (!token) {
+        this.user = null
+        return
+      }
+
       this.loading = true
       try {
         const config = useRuntimeConfig()
         const data = await $fetch<{ user: User }>(`${config.public.apiUrl}/user`, {
-          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         })
         this.user = data.user
       } catch {
         this.user = null
+        localStorage.removeItem('auth_token')
       } finally {
         this.loading = false
       }

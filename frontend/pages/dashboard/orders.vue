@@ -68,13 +68,12 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
 
-const config = useRuntimeConfig()
-const apiUrl = config.public.apiUrl
+const { apiUrl } = useApi()
 const currentPage = ref(1)
 
 const { data: orders, pending } = await useFetch(`${apiUrl}/dashboard/orders`, {
   query: { page: currentPage },
-  credentials: 'include',
+  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
   watch: [currentPage],
 })
 

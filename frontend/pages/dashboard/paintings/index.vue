@@ -103,22 +103,18 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
 
-const config = useRuntimeConfig()
-const apiUrl = config.public.apiUrl
+const { authFetch, apiUrl } = useApi()
 const currentPage = ref(1)
 
 const { data: paintings, pending, refresh } = await useFetch(`${apiUrl}/dashboard/paintings`, {
   query: { page: currentPage },
-  credentials: 'include',
+  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
   watch: [currentPage],
 })
 
 const deletePainting = async (id: number) => {
   if (!confirm('Are you sure you want to delete this painting?')) return
-  await $fetch(`${apiUrl}/dashboard/paintings/${id}`, {
-    method: 'DELETE',
-    credentials: 'include',
-  })
+  await authFetch(`/dashboard/paintings/${id}`, { method: 'DELETE' })
   refresh()
 }
 

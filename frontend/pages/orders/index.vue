@@ -70,11 +70,10 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
 
-const config = useRuntimeConfig()
-const apiUrl = config.public.apiUrl
+const { apiUrl } = useApi()
 
 const { data: orders, pending } = await useFetch(`${apiUrl}/orders`, {
-  credentials: 'include',
+  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
 })
 
 const formatDate = (date: string) => new Date(date).toLocaleDateString('en-US', {

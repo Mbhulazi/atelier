@@ -198,8 +198,7 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
 
-const config = useRuntimeConfig()
-const apiUrl = config.public.apiUrl
+const { authFetch, apiUrl } = useApi()
 const { user, isPainter, fetchUser } = useAuth()
 
 const newSpecialty = ref('')
@@ -228,9 +227,7 @@ const passwordForm = reactive({
 onMounted(async () => {
   if (isPainter.value) {
     try {
-      const res = await $fetch<{ connected: boolean }>(`${apiUrl}/stripe/connect/status`, {
-        credentials: 'include',
-      })
+      const res = await authFetch<{ connected: boolean }>('/stripe/connect/status')
       stripeConnected.value = res.connected
     } catch {}
   }
@@ -248,7 +245,7 @@ const updateProfile = async () => {
   savingProfile.value = true
   profileSuccess.value = false
   try {
-    await $fetch(`${apiUrl}/profile`, {
+    await authFetch('/profile', {
       method: 'PUT',
       body: {
         name: profileForm.name,
@@ -258,7 +255,6 @@ const updateProfile = async () => {
         website: profileForm.website,
         style: profileForm.style ? profileForm.style.split(',').map(s => s.trim()).filter(Boolean) : [],
       },
-      credentials: 'include',
     })
     await fetchUser()
     profileSuccess.value = true
@@ -278,10 +274,9 @@ const changePassword = async () => {
   savingPassword.value = true
   passwordSuccess.value = false
   try {
-    await $fetch(`${apiUrl}/password`, {
+    await authFetch('/password', {
       method: 'PUT',
       body: passwordForm,
-      credentials: 'include',
     })
     passwordForm.current_password = ''
     passwordForm.password = ''
@@ -298,9 +293,8 @@ const changePassword = async () => {
 const connectStripe = async () => {
   connectingStripe.value = true
   try {
-    const res = await $fetch<{ url: string }>(`${apiUrl}/stripe/connect/onboard`, {
+    const res = await authFetch<{ url: string }>('/stripe/connect/onboard', {
       method: 'POST',
-      credentials: 'include',
     })
     window.location.href = res.url
   } catch (e: any) {

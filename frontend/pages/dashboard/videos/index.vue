@@ -111,13 +111,12 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
 
-const config = useRuntimeConfig()
-const apiUrl = config.public.apiUrl
+const { authFetch, apiUrl } = useApi()
 const currentPage = ref(1)
 
 const { data: videos, pending, refresh } = await useFetch(`${apiUrl}/dashboard/videos`, {
   query: { page: currentPage },
-  credentials: 'include',
+  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
   watch: [currentPage],
 })
 
@@ -125,7 +124,7 @@ const deleteVideo = async (id: number) => {
   if (!confirm('Are you sure you want to delete this video?')) return
   await $fetch(`${apiUrl}/dashboard/videos/${id}`, {
     method: 'DELETE',
-    credentials: 'include',
+    headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
   })
   refresh()
 }

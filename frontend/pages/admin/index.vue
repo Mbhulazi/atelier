@@ -110,8 +110,7 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth', layout: false })
 
-const config = useRuntimeConfig()
-const apiUrl = config.public.apiUrl
+const { authFetch, apiUrl } = useApi()
 const { user: currentUser, isAdmin } = useAuth()
 
 if (!isAdmin.value) {
@@ -122,7 +121,7 @@ const roleFilter = ref('')
 const currentPage = ref(1)
 
 const { data: stats } = await useFetch(`${apiUrl}/admin/stats`, {
-  credentials: 'include',
+  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
 })
 
 const { data: users, pending, refresh } = await useFetch(`${apiUrl}/admin/users`, {
@@ -130,16 +129,15 @@ const { data: users, pending, refresh } = await useFetch(`${apiUrl}/admin/users`
     role: roleFilter.value,
     page: currentPage.value,
   })),
-  credentials: 'include',
+  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
   watch: [roleFilter, currentPage],
 })
 
 const updateRole = async (userId: number, newRole: string) => {
   try {
-    await $fetch(`${apiUrl}/admin/users/${userId}/role`, {
+    await authFetch(`/admin/users/${userId}/role`, {
       method: 'PUT',
       body: { role: newRole },
-      credentials: 'include',
     })
     refresh()
   } catch (e: any) {
@@ -150,9 +148,8 @@ const updateRole = async (userId: number, newRole: string) => {
 const deleteUser = async (userId: number, name: string) => {
   if (!confirm(`Are you sure you want to delete ${name}?`)) return
   try {
-    await $fetch(`${apiUrl}/admin/users/${userId}`, {
+    await authFetch(`/admin/users/${userId}`, {
       method: 'DELETE',
-      credentials: 'include',
     })
     refresh()
   } catch (e: any) {

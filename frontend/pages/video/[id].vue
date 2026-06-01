@@ -149,8 +149,7 @@
 
 <script setup lang="ts">
 const route = useRoute()
-const config = useRuntimeConfig()
-const apiUrl = config.public.apiUrl
+const { authFetch, apiUrl } = useApi()
 const { user, isAuthenticated } = useAuth()
 const videoId = route.params.id as string
 
@@ -169,9 +168,7 @@ const canWatch = computed(() => {
 onMounted(async () => {
   if (isAuthenticated.value && video.value && !video.value.is_free) {
     try {
-      const res = await $fetch<{ has_access: boolean }>(`${apiUrl}/videos/${videoId}/access`, {
-        credentials: 'include',
-      })
+      const res = await authFetch<{ has_access: boolean }>(`/videos/${videoId}/access`)
       hasAccess.value = res.has_access
     } catch {}
   }
@@ -188,9 +185,8 @@ const purchaseVideo = async () => {
   }
   purchasing.value = true
   try {
-    const res = await $fetch<{ url: string }>(`${apiUrl}/videos/${videoId}/purchase`, {
+    const res = await authFetch<{ url: string }>(`/videos/${videoId}/purchase`, {
       method: 'POST',
-      credentials: 'include',
     })
     window.location.href = res.url
   } catch (e: any) {

@@ -145,8 +145,7 @@
 definePageMeta({ middleware: 'auth' })
 
 const route = useRoute()
-const config = useRuntimeConfig()
-const apiUrl = config.public.apiUrl
+const { authFetch, apiUrl } = useApi()
 const videoId = route.params.id as string
 
 const loading = ref(true)
@@ -173,7 +172,7 @@ const submitting = ref(false)
 
 onMounted(async () => {
   try {
-    const video = await $fetch(`${apiUrl}/videos/${videoId}`, { credentials: 'include' })
+    const video = await authFetch(`/videos/${videoId}`)
     Object.assign(form, {
       title: video.title,
       description: video.description || '',
@@ -230,10 +229,9 @@ const submitVideo = async () => {
     if (newVideoFile.value) formData.append('video', newVideoFile.value)
     if (thumbnailFile.value) formData.append('thumbnail', thumbnailFile.value)
 
-    await $fetch(`${apiUrl}/dashboard/videos/${videoId}`, {
+    await authFetch(`/dashboard/videos/${videoId}`, {
       method: 'POST',
       body: formData,
-      credentials: 'include',
     })
     navigateTo('/dashboard/videos')
   } finally {

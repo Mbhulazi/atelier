@@ -5,12 +5,15 @@ export const useAuth = () => {
   const config = useRuntimeConfig()
 
   const login = async (email: string, password: string, remember = false) => {
-    await $fetch(`${config.public.apiUrl}/login`, {
+    const data = await $fetch<{ user: any; token: string }>(`${config.public.apiUrl}/login`, {
       method: 'POST',
       body: { email, password, remember },
       withCredentials: true,
     })
-    await store.fetchUser()
+    if (data.token) {
+      localStorage.setItem('auth_token', data.token)
+    }
+    store.user = data.user
   }
 
   const register = async (data: {
@@ -20,19 +23,25 @@ export const useAuth = () => {
     password_confirmation: string
     role: 'painter' | 'collector'
   }) => {
-    await $fetch(`${config.public.apiUrl}/register`, {
+    const res = await $fetch<{ user: any; token: string }>(`${config.public.apiUrl}/register`, {
       method: 'POST',
       body: data,
       withCredentials: true,
     })
-    await store.fetchUser()
+    if (res.token) {
+      localStorage.setItem('auth_token', res.token)
+    }
+    store.user = res.user
   }
 
   const logout = async () => {
     await $fetch(`${config.public.apiUrl}/logout`, {
       method: 'POST',
-      withCredentials: true,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+      },
     })
+    localStorage.removeItem('auth_token')
     store.clearUser()
     navigateTo('/login')
   }

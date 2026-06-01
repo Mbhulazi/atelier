@@ -136,7 +136,6 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
         if ($user) {
             $token = Str::random(64);
-            // In production: store token and send email
         }
 
         return response()->json(['message' => 'If the email exists, a reset link has been sent']);

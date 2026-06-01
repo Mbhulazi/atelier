@@ -104,24 +104,22 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
 
-const config = useRuntimeConfig()
-const apiUrl = config.public.apiUrl
+const { authFetch, apiUrl } = useApi()
 const connecting = ref(false)
 
 const { data: stripeStatus } = await useFetch(`${apiUrl}/stripe/connect/status`, {
-  credentials: 'include',
+  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
 })
 
 const { data: earnings } = await useFetch(`${apiUrl}/dashboard/earnings`, {
-  credentials: 'include',
+  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
 })
 
 const connectStripe = async () => {
   connecting.value = true
   try {
-    const res = await $fetch<{ url: string }>(`${apiUrl}/stripe/connect/onboard`, {
+    const res = await authFetch<{ url: string }>('/stripe/connect/onboard', {
       method: 'POST',
-      credentials: 'include',
     })
     window.location.href = res.url
   } catch (e: any) {

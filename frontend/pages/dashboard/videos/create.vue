@@ -165,8 +165,7 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
 
-const config = useRuntimeConfig()
-const apiUrl = config.public.apiUrl
+const { authFetch, apiUrl } = useApi()
 
 const form = reactive({
   title: '',
@@ -235,10 +234,9 @@ const submitVideo = async () => {
     form.tags.forEach((tag, i) => formData.append(`tags[${i}]`, tag))
     if (thumbnailFile.value) formData.append('thumbnail', thumbnailFile.value)
 
-    await $fetch(`${apiUrl}/dashboard/videos`, {
+    await authFetch('/dashboard/videos', {
       method: 'POST',
       body: formData,
-      credentials: 'include',
     })
 
     navigateTo('/dashboard/videos')
