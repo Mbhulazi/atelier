@@ -16,6 +16,7 @@ Route::get('/painters', [\App\Http\Controllers\Api\PainterController::class, 'in
 Route::get('/painters/{slug}', [\App\Http\Controllers\Api\PainterController::class, 'show']);
 Route::get('/painters/{slug}/paintings', [\App\Http\Controllers\Api\PainterController::class, 'paintings']);
 Route::get('/painters/{slug}/videos', [\App\Http\Controllers\Api\PainterController::class, 'videos']);
+Route::get('/painters/{slug}/projects', [\App\Http\Controllers\Api\PainterController::class, 'projects']);
 
 // Public paintings
 Route::get('/paintings', [\App\Http\Controllers\Api\PaintingController::class, 'index']);
