@@ -62,6 +62,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/orders/checkout', [\App\Http\Controllers\Api\OrderController::class, 'checkout']);
     Route::get('/orders', [\App\Http\Controllers\Api\OrderController::class, 'index']);
     Route::get('/orders/{id}', [\App\Http\Controllers\Api\OrderController::class, 'show']);
+    Route::post('/videos/{id}/purchase', [\App\Http\Controllers\Api\VideoController::class, 'purchase']);
+    Route::get('/videos/{id}/access', [\App\Http\Controllers\Api\VideoController::class, 'checkAccess']);
 
     // Stripe Connect
     Route::post('/stripe/connect/onboard', [\App\Http\Controllers\Api\PainterController::class, 'stripeOnboard']);
