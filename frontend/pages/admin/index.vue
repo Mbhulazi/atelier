@@ -121,7 +121,7 @@ const roleFilter = ref('')
 const currentPage = ref(1)
 
 const { data: stats } = await useFetch(`${apiUrl}/admin/stats`, {
-  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
+  headers: import.meta.client ? { Authorization: `Bearer ${localStorage.getItem('auth_token')}` } : {},
 })
 
 const { data: users, pending, refresh } = await useFetch(`${apiUrl}/admin/users`, {
@@ -129,7 +129,7 @@ const { data: users, pending, refresh } = await useFetch(`${apiUrl}/admin/users`
     role: roleFilter.value,
     page: currentPage.value,
   })),
-  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
+  headers: import.meta.client ? { Authorization: `Bearer ${localStorage.getItem('auth_token')}` } : {},
   watch: [roleFilter, currentPage],
 })
 

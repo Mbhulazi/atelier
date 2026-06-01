@@ -108,11 +108,11 @@ const { authFetch, apiUrl } = useApi()
 const connecting = ref(false)
 
 const { data: stripeStatus } = await useFetch(`${apiUrl}/stripe/connect/status`, {
-  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
+  headers: import.meta.client ? { Authorization: `Bearer ${localStorage.getItem('auth_token')}` } : {},
 })
 
 const { data: earnings } = await useFetch(`${apiUrl}/dashboard/earnings`, {
-  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
+  headers: import.meta.client ? { Authorization: `Bearer ${localStorage.getItem('auth_token')}` } : {},
 })
 
 const connectStripe = async () => {

@@ -8,7 +8,6 @@ export const useAuth = () => {
     const data = await $fetch<{ user: any; token: string }>(`${config.public.apiUrl}/login`, {
       method: 'POST',
       body: { email, password, remember },
-      withCredentials: true,
     })
     if (data.token) {
       localStorage.setItem('auth_token', data.token)
@@ -26,7 +25,6 @@ export const useAuth = () => {
     const res = await $fetch<{ user: any; token: string }>(`${config.public.apiUrl}/register`, {
       method: 'POST',
       body: data,
-      withCredentials: true,
     })
     if (res.token) {
       localStorage.setItem('auth_token', res.token)
@@ -35,12 +33,14 @@ export const useAuth = () => {
   }
 
   const logout = async () => {
-    await $fetch(`${config.public.apiUrl}/logout`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
-      },
-    })
+    try {
+      await $fetch(`${config.public.apiUrl}/logout`, {
+        method: 'POST',
+        headers: import.meta.client ? {
+          Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+        } : {},
+      })
+    } catch {}
     localStorage.removeItem('auth_token')
     store.clearUser()
     navigateTo('/login')

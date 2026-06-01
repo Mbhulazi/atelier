@@ -73,7 +73,7 @@ const currentPage = ref(1)
 
 const { data: orders, pending } = await useFetch(`${apiUrl}/dashboard/orders`, {
   query: { page: currentPage },
-  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
+  headers: import.meta.client ? { Authorization: `Bearer ${localStorage.getItem('auth_token')}` } : {},
   watch: [currentPage],
 })
 

@@ -108,7 +108,7 @@ const currentPage = ref(1)
 
 const { data: paintings, pending, refresh } = await useFetch(`${apiUrl}/dashboard/paintings`, {
   query: { page: currentPage },
-  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
+  headers: import.meta.client ? { Authorization: `Bearer ${localStorage.getItem('auth_token')}` } : {},
   watch: [currentPage],
 })
 

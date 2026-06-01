@@ -1,7 +1,9 @@
-export default defineNuxtRouteMiddleware(() => {
-  const { isAuthenticated, loading } = useAuth()
+export default defineNuxtRouteMiddleware(async () => {
+  if (import.meta.server) return
 
-  if (!loading && !isAuthenticated.value) {
+  const token = localStorage.getItem('auth_token')
+
+  if (!token) {
     return navigateTo('/login')
   }
 })

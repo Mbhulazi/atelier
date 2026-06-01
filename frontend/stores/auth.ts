@@ -26,7 +26,7 @@ export const useAuthStore = defineStore('auth', {
 
   actions: {
     async fetchUser() {
-      const token = localStorage.getItem('auth_token')
+      const token = import.meta.client ? localStorage.getItem('auth_token') : null
       if (!token) {
         this.user = null
         return

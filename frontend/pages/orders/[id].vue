@@ -123,7 +123,7 @@ const orderNumber = route.params.id as string
 const retrying = ref(false)
 
 const { data: order, pending } = await useFetch(`${apiUrl}/orders/${orderNumber}`, {
-  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
+  headers: import.meta.client ? { Authorization: `Bearer ${localStorage.getItem('auth_token')}` } : {},
 })
 
 const retryPayment = async () => {

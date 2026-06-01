@@ -1,5 +1,28 @@
 <template>
   <div>
+    <!-- Welcome Banner -->
+    <div v-if="isAuthenticated" class="bg-primary-50 border-b border-primary-100 pt-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center">
+              <span class="text-sm font-serif font-bold text-primary-600">{{ user?.name?.charAt(0) }}</span>
+            </div>
+            <div>
+              <p class="font-medium text-canvas-900">Welcome back, {{ user?.name }}!</p>
+              <p class="text-sm text-canvas-500">Ready to create something beautiful?</p>
+            </div>
+          </div>
+          <NuxtLink
+            to="/dashboard"
+            class="px-5 py-2 bg-primary-500 hover:bg-primary-600 text-white text-sm font-medium rounded-xl transition"
+          >
+            Go to Dashboard
+          </NuxtLink>
+        </div>
+      </div>
+    </div>
+
     <!-- Hero Section -->
     <section class="relative min-h-screen flex items-center bg-gradient-to-br from-canvas-50 via-white to-primary-50 pt-16">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
@@ -15,19 +38,27 @@
             </p>
             <div class="mt-10 flex flex-wrap gap-4">
               <NuxtLink
+                v-if="!isAuthenticated"
                 to="/register"
                 class="px-8 py-4 bg-primary-600 text-white rounded-xl font-semibold text-lg hover:bg-primary-700 transition shadow-lg shadow-primary-600/25"
               >
                 Start as a Painter
               </NuxtLink>
               <NuxtLink
-                to="/explore"
+                v-else
+                :to="isPainter ? '/dashboard/paintings/create' : '/gallery'"
+                class="px-8 py-4 bg-primary-600 text-white rounded-xl font-semibold text-lg hover:bg-primary-700 transition shadow-lg shadow-primary-600/25"
+              >
+                {{ isPainter ? 'Upload a Painting' : 'Browse Gallery' }}
+              </NuxtLink>
+              <NuxtLink
+                to="/gallery"
                 class="px-8 py-4 bg-white text-canvas-700 rounded-xl font-semibold text-lg border-2 border-canvas-200 hover:border-primary-300 transition"
               >
                 Explore Artists
               </NuxtLink>
             </div>
-            <p class="mt-4 text-sm text-canvas-500">
+            <p v-if="!isAuthenticated" class="mt-4 text-sm text-canvas-500">
               Free to join. No credit card required.
             </p>
           </div>
@@ -199,14 +230,24 @@
     <section class="py-24 bg-primary-600">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 class="text-4xl lg:text-5xl font-serif font-bold text-white leading-tight">
-          Ready to Share Your Art with the World?
+          {{ isAuthenticated ? 'Ready to Get Started?' : 'Ready to Share Your Art with the World?' }}
         </h2>
         <p class="mt-6 text-xl text-primary-100 max-w-2xl mx-auto">
-          Join thousands of painters who are building their careers on Atelier.
-          Create your free account today.
+          {{ isAuthenticated
+            ? 'Head to your dashboard to start creating and selling.'
+            : 'Join thousands of painters who are building their careers on Atelier. Create your free account today.'
+          }}
         </p>
         <div class="mt-10 flex flex-wrap justify-center gap-4">
           <NuxtLink
+            v-if="isAuthenticated"
+            to="/dashboard"
+            class="px-8 py-4 bg-white text-primary-700 rounded-xl font-semibold text-lg hover:bg-primary-50 transition shadow-lg"
+          >
+            Go to Dashboard
+          </NuxtLink>
+          <NuxtLink
+            v-else
             to="/register"
             class="px-8 py-4 bg-white text-primary-700 rounded-xl font-semibold text-lg hover:bg-primary-50 transition shadow-lg"
           >
@@ -220,4 +261,6 @@
 
 <script setup lang="ts">
 definePageMeta({ layout: 'default' })
+
+const { user, isAuthenticated, isPainter } = useAuth()
 </script>

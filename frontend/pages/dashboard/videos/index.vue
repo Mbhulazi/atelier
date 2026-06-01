@@ -116,7 +116,7 @@ const currentPage = ref(1)
 
 const { data: videos, pending, refresh } = await useFetch(`${apiUrl}/dashboard/videos`, {
   query: { page: currentPage },
-  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
+  headers: import.meta.client ? { Authorization: `Bearer ${localStorage.getItem('auth_token')}` } : {},
   watch: [currentPage],
 })
 
@@ -124,7 +124,7 @@ const deleteVideo = async (id: number) => {
   if (!confirm('Are you sure you want to delete this video?')) return
   await $fetch(`${apiUrl}/dashboard/videos/${id}`, {
     method: 'DELETE',
-    headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
+    headers: import.meta.client ? { Authorization: `Bearer ${localStorage.getItem('auth_token')}` } : {},
   })
   refresh()
 }

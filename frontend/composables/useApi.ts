@@ -3,7 +3,7 @@ export const useApi = () => {
   const apiUrl = config.public.apiUrl
 
   const authFetch = async <T = any>(url: string, options: any = {}): Promise<T> => {
-    const token = localStorage.getItem('auth_token')
+    const token = import.meta.client ? localStorage.getItem('auth_token') : null
     const headers: Record<string, string> = {
       ...options.headers,
     }

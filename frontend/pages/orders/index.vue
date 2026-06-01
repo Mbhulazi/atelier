@@ -73,7 +73,7 @@ definePageMeta({ middleware: 'auth' })
 const { apiUrl } = useApi()
 
 const { data: orders, pending } = await useFetch(`${apiUrl}/orders`, {
-  headers: { Authorization: `Bearer ${localStorage.getItem('auth_token')}` },
+  headers: import.meta.client ? { Authorization: `Bearer ${localStorage.getItem('auth_token')}` } : {},
 })
 
 const formatDate = (date: string) => new Date(date).toLocaleDateString('en-US', {

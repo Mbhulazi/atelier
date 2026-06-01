@@ -10,28 +10,37 @@
         </NuxtLink>
 
         <div class="hidden md:flex items-center gap-8">
-          <NuxtLink to="/grisaille" class="text-canvas-600 hover:text-primary-600 transition font-medium">
-            Grisaille Tool
+          <NuxtLink to="/gallery" class="text-canvas-600 hover:text-primary-600 transition font-medium">
+            Gallery
           </NuxtLink>
-          <NuxtLink to="/explore" class="text-canvas-600 hover:text-primary-600 transition font-medium">
-            Explore
+          <NuxtLink to="/painters" class="text-canvas-600 hover:text-primary-600 transition font-medium">
+            Painters
           </NuxtLink>
           <NuxtLink to="/shop" class="text-canvas-600 hover:text-primary-600 transition font-medium">
             Shop
+          </NuxtLink>
+          <NuxtLink to="/grisaille" class="text-canvas-600 hover:text-primary-600 transition font-medium">
+            Grisaille Tool
           </NuxtLink>
         </div>
 
         <div class="flex items-center gap-4">
           <template v-if="isAuthenticated">
+            <div class="hidden sm:flex items-center gap-2">
+              <div class="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                <span class="text-xs font-serif font-bold text-primary-600">{{ user?.name?.charAt(0) }}</span>
+              </div>
+              <span class="text-sm font-medium text-canvas-700">{{ user?.name }}</span>
+            </div>
             <NuxtLink
-              :to="isPainter ? '/dashboard' : '/explore'"
+              to="/dashboard"
               class="px-4 py-2 text-canvas-700 hover:text-primary-600 transition font-medium"
             >
               Dashboard
             </NuxtLink>
             <button
-              @click="logout"
-              class="px-4 py-2 text-canvas-600 hover:text-canvas-800 transition"
+              @click="handleLogout"
+              class="px-4 py-2 text-canvas-600 hover:text-canvas-800 transition text-sm"
             >
               Logout
             </button>
@@ -45,7 +54,7 @@
             </NuxtLink>
             <NuxtLink
               to="/register"
-              class="px-5 py-2 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 transition"
+              class="px-5 py-2 bg-primary-500 text-white rounded-xl font-medium hover:bg-primary-600 transition"
             >
               Get Started
             </NuxtLink>
@@ -57,5 +66,9 @@
 </template>
 
 <script setup lang="ts">
-const { isAuthenticated, isPainter, logout } = useAuth()
+const { user, isAuthenticated, isPainter, logout } = useAuth()
+
+const handleLogout = async () => {
+  await logout()
+}
 </script>
