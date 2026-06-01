@@ -4,7 +4,7 @@
       <h1 class="text-3xl font-serif font-bold text-canvas-900 mb-8">Dashboard</h1>
       <p class="text-canvas-600">Welcome back, {{ user?.name }}</p>
 
-      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <NuxtLink
           to="/dashboard/paintings"
           class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition group"
@@ -21,6 +21,15 @@
           <Icon name="mdi:video-outline" class="w-8 h-8 text-primary-600 mb-3" />
           <h3 class="font-semibold text-canvas-900 group-hover:text-primary-600 transition">Manage Videos</h3>
           <p class="text-sm text-canvas-500 mt-1">Upload tutorials and techniques</p>
+        </NuxtLink>
+
+        <NuxtLink
+          to="/dashboard/earnings"
+          class="bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition group"
+        >
+          <Icon name="mdi:cash-multiple" class="w-8 h-8 text-primary-600 mb-3" />
+          <h3 class="font-semibold text-canvas-900 group-hover:text-primary-600 transition">Earnings</h3>
+          <p class="text-sm text-canvas-500 mt-1">Track sales and payouts</p>
         </NuxtLink>
 
         <NuxtLink
